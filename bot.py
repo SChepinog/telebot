@@ -5,8 +5,9 @@ from telegram.ext import MessageHandler, Filters
 from telegram.ext import InlineQueryHandler
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 import logging
+import mine_token
 
-bot_token = ''
+bot_token = mine_token.get_token()
 
 bot = telegram.Bot(token=bot_token)
 print(bot.get_me())
