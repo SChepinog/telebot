@@ -9,6 +9,13 @@ def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start\n' + str(message.chat.id))
 
 
+@bot.message_handler(commands=['game'])
+def game_command(message):
+    keyboard_start = telebot.types.ReplyKeyboardMarkup(True, True)
+    keyboard_start.row('Start', 'Cancel')
+    bot.send_message(message.chat.id, "Начнем?", reply_markup=keyboard_start)
+
+
 @bot.message_handler(content_types=['text'])
 def chat_id(message):
     print('got message ' + str(message))
