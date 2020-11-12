@@ -1,14 +1,29 @@
 import telebot
 from telebot import types
-from game_container import Game
+
 import mine_token
+from game_container import Game
 
 bot = telebot.TeleBot(mine_token.get_token())
+game = Game()
+
+
+def get_current_game():
+    return game
 
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start\n' + str(message.chat.id))
+
+
+@bot.message_handler(commands=['stop'])
+def start_message(message):
+    if get_current_game().is_started:
+        get_current_game().stop()
+        bot.send_message(message.chat.id, 'Game has stopped. Secret was ' + get_current_game().secret)
+    else:
+        bot.send_message(message.chat.id, 'There is no game to stop')
 
 
 @bot.message_handler(commands=['game'])
@@ -19,17 +34,28 @@ def game_command(message):
     key_start = types.InlineKeyboardButton(text="Cancel", callback_data="cancel")
     keyboard.add(key_start)
     bot.reply_to(message, text='Should we begin?', reply_markup=keyboard)
-    # bot.send_message(message.from_user.id, text='Should we begin?', reply_markup=keyboard)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def should_we_start(call):
     if call.data == 'start':
-        new_game = Game()
-        secret = new_game.start()
-        bot.send_message(call.message.chat.id, 'Game has begun! Secret is ' + secret)
+        if get_current_game().is_started:
+            pass
+        else:
+            get_current_game().start()
+            bot.send_message(call.message.chat.id, 'Game has begun! Secret is ' + get_current_game().secret)
     elif call.data == 'cancel':
         bot.send_message(call.message.chat.id, "OK")
+
+
+@bot.message_handler(content_types=['text'])
+def chat_id(message):
+    if get_current_game().is_started:
+        result = get_current_game().try_string(message.text)
+        bot.send_message(message.chat.id, str(result))
+    else:
+        print('got message ' + str(message))
+        bot.send_message(message.chat.id, 'No game is active. This chat ID: ' + str(message.chat.id))
 
 
 # @bot.message_handler(commands=['help'])
