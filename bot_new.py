@@ -13,12 +13,12 @@ def get_current_game():
 
 
 @bot.message_handler(commands=['start'])
-def start_message(message):
+def start_command(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start\n' + str(message.chat.id))
 
 
 @bot.message_handler(commands=['stop'])
-def start_message(message):
+def stop_command(message):
     if get_current_game().is_started:
         get_current_game().stop()
         bot.send_message(message.chat.id, 'Game has stopped. Secret was ' + get_current_game().secret)
