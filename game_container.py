@@ -36,10 +36,11 @@ class Game:
         bulls = 0
         cows = 0
         for i in range(0, len(self.secret)):
-            if self.secret[i] == try_secret[i]:
-                bulls += 1
             if try_secret.__contains__(self.secret[i]):
                 cows += 1
+            if self.secret[i] == try_secret[i]:
+                bulls += 1
+                cows -= 1
         return 'Bulls: ' + str(bulls) + ', Cows: ' + str(cows)
 
     @staticmethod
