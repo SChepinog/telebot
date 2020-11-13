@@ -40,10 +40,12 @@ def game_command(message):
 def should_we_start(call):
     if call.data == 'start':
         if get_current_game().is_started:
-            pass
+            bot.send_message(call.message.chat.id, 'Game is started already')
         else:
             get_current_game().start()
-            bot.send_message(call.message.chat.id, 'Game has begun! Secret is ' + get_current_game().secret)
+            print("Game is started with user " + call.from_user.first_name + " " + call.from_user.last_name
+                  + " (" + call.from_user.username + "). Secret is " + get_current_game().secret)
+            bot.send_message(call.message.chat.id, 'Game has begun!')
     elif call.data == 'cancel':
         bot.send_message(call.message.chat.id, "OK")
 
