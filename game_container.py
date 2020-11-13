@@ -26,7 +26,7 @@ class Game:
             elif try_secret == self.secret:
                 self.try_count += 1
                 self.stop()
-                return 'Victory! It toke ' + str(self.try_count) + ' tries'
+                return 'Victory! It took ' + str(self.try_count) + ' tries'
             else:
                 result = self.__check_string(try_secret)
                 self.try_count += 1
