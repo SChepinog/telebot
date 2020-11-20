@@ -62,9 +62,13 @@ def should_we_start(call):
 @bot.message_handler(content_types=['text'])
 def chat_id(message):
     user_id = str(message.from_user.id)
-    if game_container.user_has_game(user_id) & game_container.get_game_for_user(user_id).is_started:
-        result = game_container.get_game_for_user(user_id).try_string(message.text)
-        bot.send_message(message.chat.id, str(result))
+    if game_container.user_has_game(user_id):
+        if game_container.get_game_for_user(user_id).is_started:
+            result = game_container.get_game_for_user(user_id).try_string(message.text)
+            bot.send_message(message.chat.id, str(result))
+        else:
+            game_container.add_game(user_id)
+            bot.send_message(message.chat.id, 'Error occured. Please try again')
     else:
         print('got message ' + str(message))
         bot.send_message(message.chat.id, 'No game is active. This chat ID: ' + str(message.chat.id))
