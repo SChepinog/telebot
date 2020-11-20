@@ -2,14 +2,9 @@ import telebot
 from telebot import types
 
 import mine_token
-from game_container import Game
+import game_container
 
 bot = telebot.TeleBot(mine_token.get_token())
-game = Game()
-
-
-def get_current_game():
-    return game
 
 
 @bot.message_handler(commands=['start'])
@@ -19,9 +14,11 @@ def start_command(message):
 
 @bot.message_handler(commands=['stop'])
 def stop_command(message):
-    if get_current_game().is_started:
-        get_current_game().stop()
-        bot.send_message(message.chat.id, 'Game has stopped. Secret was ' + get_current_game().secret)
+    user_id = str(message.from_user.id)
+    if game_container.user_has_game(user_id):
+        game_container.get_game_for_user(user_id).stop()
+        bot.send_message(message.chat.id, 'Game has stopped. Secret was '
+                         + game_container.get_game_for_user(user_id).secret)
     else:
         bot.send_message(message.chat.id, 'There is no game to stop')
 
@@ -38,13 +35,25 @@ def game_command(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def should_we_start(call):
+    user_id = str(call.from_user.id)
     if call.data == 'start':
-        if get_current_game().is_started:
-            bot.send_message(call.message.chat.id, 'Game is started already')
+        if game_container.user_has_game(user_id):
+            if game_container.get_game_for_user(user_id).is_started:
+                bot.send_message(call.message.chat.id, 'Game is started already')
+            else:
+                game_container.get_game_for_user(user_id).start()
+                print(
+                    "Game is started with user " + str(call.from_user.first_name) + " " + str(call.from_user.last_name)
+                    + " (" + str(call.from_user.username)
+                    + "). Secret is " + game_container.get_game_for_user(user_id).secret)
+                bot.send_message(call.message.chat.id, 'Game has begun!')
         else:
-            get_current_game().start()
-            print("Game is started with user " + call.from_user.first_name + " " + call.from_user.last_name
-                  + " (" + call.from_user.username + "). Secret is " + get_current_game().secret)
+            game_container.add_game(user_id)
+            game_container.get_game_for_user(user_id).start()
+            print(
+                "Game is started with user " + str(call.from_user.first_name) + " " + str(call.from_user.last_name)
+                + " (" + str(call.from_user.username) + "). Secret is "
+                + game_container.get_game_for_user(user_id).secret)
             bot.send_message(call.message.chat.id, 'Game has begun!')
     elif call.data == 'cancel':
         bot.send_message(call.message.chat.id, "OK")
@@ -52,8 +61,9 @@ def should_we_start(call):
 
 @bot.message_handler(content_types=['text'])
 def chat_id(message):
-    if get_current_game().is_started:
-        result = get_current_game().try_string(message.text)
+    user_id = str(message.from_user.id)
+    if game_container.user_has_game(user_id) & game_container.get_game_for_user(user_id).is_started:
+        result = game_container.get_game_for_user(user_id).try_string(message.text)
         bot.send_message(message.chat.id, str(result))
     else:
         print('got message ' + str(message))
@@ -66,18 +76,6 @@ def chat_id(message):
 #     keyboard_start = telebot.types.ReplyKeyboardMarkup(True, True)
 #     keyboard_start.row('Start', 'Cancel')
 #     bot.send_message(message.chat.id, "Начнем?", reply_markup=keyboard_start)
-
-
-# @bot.message_handler(content_types=['text'])
-# def chat_id(message):
-#     print('got message ' + str(message))
-#     bot.send_message(message.chat.id, 'Chat ID: ' + str(message.chat.id))
-
-
-# @bot.channel_post_handler(content_types=['text'])
-# def chat_id(message):
-#     print('got channel post' + str(message))
-#     bot.send_message(message.chat.id, 'Chat ID: ' + str(message.chat.id))
 
 
 bot.polling()

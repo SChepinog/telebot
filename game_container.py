@@ -1,5 +1,19 @@
 import random
 
+games = dict(string='user', Game='game')
+
+
+def add_game(user_id):
+    games[user_id] = Game()
+
+
+def get_game_for_user(user_id):
+    return games.get(user_id)
+
+
+def user_has_game(user_id):
+    return games.keys().__contains__(user_id)
+
 
 class Game:
 
