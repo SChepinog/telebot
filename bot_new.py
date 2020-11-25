@@ -1,8 +1,8 @@
 import telebot
 from telebot import types
 
-import mine_token
 import game_container
+import mine_token
 
 bot = telebot.TeleBot(mine_token.get_token())
 
@@ -25,11 +25,7 @@ def stop_command(message):
 
 @bot.message_handler(commands=['game'])
 def game_command(message):
-    keyboard = types.InlineKeyboardMarkup()
-    key_start = types.InlineKeyboardButton(text="Start", callback_data="start")
-    keyboard.add(key_start)
-    key_start = types.InlineKeyboardButton(text="Cancel", callback_data="cancel")
-    keyboard.add(key_start)
+    keyboard = get_start_game_keyboard()
     bot.reply_to(message, text='Should we begin?', reply_markup=keyboard)
 
 
@@ -60,18 +56,30 @@ def should_we_start(call):
 
 
 @bot.message_handler(content_types=['text'])
-def chat_id(message):
+def handle_text_message(message):
     user_id = str(message.from_user.id)
     if game_container.user_has_game(user_id):
         if game_container.get_game_for_user(user_id).is_started:
             result = game_container.get_game_for_user(user_id).try_string(message.text)
             bot.send_message(message.chat.id, str(result))
+            if not game_container.get_game_for_user(user_id).is_started:
+                keyboard = get_start_game_keyboard()
+                bot.send_message(message.chat.id, text='Again?', reply_markup=keyboard)
         else:
             game_container.add_game(user_id)
             bot.send_message(message.chat.id, 'Error occured. Please try again')
     else:
         print('got message ' + str(message))
         bot.send_message(message.chat.id, 'No game is active. This chat ID: ' + str(message.chat.id))
+
+
+def get_start_game_keyboard():
+    keyboard = types.InlineKeyboardMarkup()
+    key_start = types.InlineKeyboardButton(text="Start", callback_data="start")
+    keyboard.add(key_start)
+    key_start = types.InlineKeyboardButton(text="Cancel", callback_data="cancel")
+    keyboard.add(key_start)
+    return keyboard
 
 
 # @bot.message_handler(commands=['help'])
