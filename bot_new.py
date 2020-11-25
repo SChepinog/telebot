@@ -1,3 +1,5 @@
+import sys
+
 import telebot
 from telebot import types
 
@@ -64,6 +66,8 @@ def handle_text_message(message):
             bot.send_message(message.chat.id, str(result))
             if not game_container.get_game_for_user(user_id).is_started:
                 keyboard = get_start_game_keyboard()
+                print('User ' + str(message.from_user.username) + ' has finished game in '
+                      + str(game_container.get_game_for_user(user_id).try_count) + ' tries')
                 bot.send_message(message.chat.id, text='Again?', reply_markup=keyboard)
         else:
             game_container.add_game(user_id)
@@ -93,6 +97,7 @@ def polling():
     try:
         bot.polling()
     except:
+        print("Error while polling:", sys.exc_info()[0])
         polling()
 
 
