@@ -89,5 +89,11 @@ def get_start_game_keyboard():
 #     keyboard_start.row('Start', 'Cancel')
 #     bot.send_message(message.chat.id, "Начнем?", reply_markup=keyboard_start)
 
+def polling():
+    try:
+        bot.polling()
+    except:
+        polling()
 
-bot.polling()
+
+polling()
