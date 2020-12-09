@@ -38,7 +38,7 @@ class Game:
         if self.is_started:
             try_secret = str(try_secret)
             if len(try_secret) != self.secret_length:
-                return 'Wrong length'
+                return 'Wrong length! My number combination contains ' + str(self.secret_length) + ' digits'
             elif try_secret == self.secret:
                 self.try_count += 1
                 self.stop()

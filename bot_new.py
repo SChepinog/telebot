@@ -36,7 +36,8 @@ def stop_command(message):
 @bot.message_handler(commands=['game'])
 def game_command(message):
     keyboard = get_start_game_keyboard()
-    bot.reply_to(message, text='Should we begin?', reply_markup=keyboard)
+    bot.send_message(message.chat.id, text='Should we begin?', reply_markup=keyboard)
+    # bot.reply_to(message, text='Should we begin?', reply_markup=keyboard)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'start')
