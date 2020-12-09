@@ -1,6 +1,6 @@
 import random
 
-games = dict(string='user', Game='game')
+games = {}
 
 
 def add_game(user_id):
