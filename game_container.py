@@ -8,6 +8,8 @@ def add_game(user_id):
 
 
 def get_game_for_user(user_id):
+    if not user_has_game(user_id):
+        add_game(user_id)
     return games.get(user_id)
 
 
