@@ -1,3 +1,4 @@
+import logging
 import sys
 
 import telebot
@@ -7,6 +8,7 @@ import game_container
 import mine_token
 
 bot = telebot.TeleBot(mine_token.get_token())
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 
 @bot.message_handler(commands=['start'])
@@ -21,7 +23,7 @@ def stop_command(message):
         game_container.get_game_for_user(user_id).stop()
         bot.send_message(message.chat.id, 'Game has stopped. Secret was '
                          + game_container.get_game_for_user(user_id).secret)
-        print('User ' + str(message.from_user.username) + ' has stopped game')
+        logging.info('User ' + str(message.from_user.username) + ' has stopped game')
         keyboard = get_start_game_keyboard()
         bot.send_message(message.chat.id, text='Again?', reply_markup=keyboard)
     else:
@@ -43,7 +45,7 @@ def start_callback_handler(call):
             bot.send_message(call.message.chat.id, 'Game is started already')
         else:
             game_container.get_game_for_user(user_id).start()
-            print(
+            logging.info(
                 "Game is started with user " + str(call.from_user.first_name) + " " + str(call.from_user.last_name)
                 + " (" + str(call.from_user.username)
                 + "). Secret is " + game_container.get_game_for_user(user_id).secret)
@@ -51,7 +53,7 @@ def start_callback_handler(call):
     else:
         game_container.add_game(user_id)
         game_container.get_game_for_user(user_id).start()
-        print(
+        logging.info(
             "Game is started with user " + str(call.from_user.first_name) + " " + str(call.from_user.last_name)
             + " (" + str(call.from_user.username) + "). Secret is "
             + game_container.get_game_for_user(user_id).secret)
@@ -72,15 +74,15 @@ def handle_text_message(message):
             bot.send_message(message.chat.id, str(result))
             if not game_container.get_game_for_user(user_id).is_started:
                 keyboard = get_start_game_keyboard()
-                print('User ' + str(message.from_user.username) + ' has finished game in '
-                      + str(game_container.get_game_for_user(user_id).try_count) + ' tries')
+                logging.info('User ' + str(message.from_user.username) + ' has finished game in '
+                             + str(game_container.get_game_for_user(user_id).try_count) + ' tries')
                 bot.send_message(message.chat.id, text='Again?', reply_markup=keyboard)
         else:
             game_container.add_game(user_id)
             bot.send_message(message.chat.id, 'Error occured. Please try again')
     else:
-        print('got message ' + str(message))
-        bot.send_message(message.chat.id, 'No game is active. This chat ID: ' + str(message.chat.id))
+        logging.info('got message ' + str(message))
+        bot.send_message(message.chat.id, 'No game is active')
 
 
 def get_start_game_keyboard():
@@ -96,7 +98,7 @@ def polling():
     try:
         bot.polling()
     except:
-        print("Error while polling:", sys.exc_info()[0])
+        logging.exception("Error while polling:", sys.exc_info()[0])
         polling()
 
 
