@@ -23,8 +23,7 @@ def stop_command(message):
     game: Game = game_container.get_game_for_user(user_id)
     if game.is_started:
         game.stop()
-        bot.send_message(message.chat.id, 'Game has stopped. Secret was '
-                         + game.secret)
+        bot.send_message(message.chat.id, 'Game has stopped. Secret was ' + game.secret)
         logging.info('User ' + str(message.from_user.username) + ' has stopped game')
         keyboard = get_start_game_keyboard()
         bot.send_message(message.chat.id, text='Again?', reply_markup=keyboard)
@@ -50,8 +49,7 @@ def start_callback_handler(call):
         game.start()
         logging.info(
             "Game is started with user " + str(call.from_user.first_name) + " " + str(call.from_user.last_name)
-            + " (" + str(call.from_user.username) + "). Secret is "
-            + game.secret)
+            + " (" + str(call.from_user.username) + "). Secret is " + game.secret)
         bot.send_message(call.message.chat.id, 'Game has begun!')
 
 
