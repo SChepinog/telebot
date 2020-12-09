@@ -35,30 +35,32 @@ def game_command(message):
     bot.reply_to(message, text='Should we begin?', reply_markup=keyboard)
 
 
-@bot.callback_query_handler(func=lambda call: True)
-def should_we_start(call):
+@bot.callback_query_handler(func=lambda call: call.data == 'start')
+def start_callback_handler(call):
     user_id = str(call.from_user.id)
-    if call.data == 'start':
-        if game_container.user_has_game(user_id):
-            if game_container.get_game_for_user(user_id).is_started:
-                bot.send_message(call.message.chat.id, 'Game is started already')
-            else:
-                game_container.get_game_for_user(user_id).start()
-                print(
-                    "Game is started with user " + str(call.from_user.first_name) + " " + str(call.from_user.last_name)
-                    + " (" + str(call.from_user.username)
-                    + "). Secret is " + game_container.get_game_for_user(user_id).secret)
-                bot.send_message(call.message.chat.id, 'Game has begun!')
+    if game_container.user_has_game(user_id):
+        if game_container.get_game_for_user(user_id).is_started:
+            bot.send_message(call.message.chat.id, 'Game is started already')
         else:
-            game_container.add_game(user_id)
             game_container.get_game_for_user(user_id).start()
             print(
                 "Game is started with user " + str(call.from_user.first_name) + " " + str(call.from_user.last_name)
-                + " (" + str(call.from_user.username) + "). Secret is "
-                + game_container.get_game_for_user(user_id).secret)
+                + " (" + str(call.from_user.username)
+                + "). Secret is " + game_container.get_game_for_user(user_id).secret)
             bot.send_message(call.message.chat.id, 'Game has begun!')
-    elif call.data == 'cancel':
-        bot.send_message(call.message.chat.id, "OK")
+    else:
+        game_container.add_game(user_id)
+        game_container.get_game_for_user(user_id).start()
+        print(
+            "Game is started with user " + str(call.from_user.first_name) + " " + str(call.from_user.last_name)
+            + " (" + str(call.from_user.username) + "). Secret is "
+            + game_container.get_game_for_user(user_id).secret)
+        bot.send_message(call.message.chat.id, 'Game has begun!')
+
+
+@bot.callback_query_handler(func=lambda call: call.data == 'cancel')
+def cancel_handler(call):
+    bot.send_message(call.message.chat.id, "OK")
 
 
 @bot.message_handler(content_types=['text'])
@@ -89,13 +91,6 @@ def get_start_game_keyboard():
     keyboard.add(key_start)
     return keyboard
 
-
-# @bot.message_handler(commands=['help'])
-# def start_message(message):
-#     bot.reply_to(message, 'Привет, ты написал мне /help\n')
-#     keyboard_start = telebot.types.ReplyKeyboardMarkup(True, True)
-#     keyboard_start.row('Start', 'Cancel')
-#     bot.send_message(message.chat.id, "Начнем?", reply_markup=keyboard_start)
 
 def polling():
     try:
