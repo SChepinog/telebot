@@ -1,102 +1,101 @@
-import telegram
-from telegram.ext import Updater
-from telegram.ext import CommandHandler
-from telegram.ext import MessageHandler, Filters
-from telegram.ext import InlineQueryHandler
-from telegram import InlineQueryResultArticle, InputTextMessageContent
 import logging
+import sys
+
+import telebot
+from telebot import types
+
+import game_container
 import mine_token
+from game_container import Game
 
-bot_token = mine_token.get_token()
-
-bot = telegram.Bot(token=bot_token)
-print(bot.get_me())
-
-updater = Updater(token=bot_token, use_context=True)
-dispatcher = updater.dispatcher
-
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
+bot = telebot.TeleBot(mine_token.get_token())
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 
-def start(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
+@bot.message_handler(commands=['start'])
+def start_command(message):
+    bot.send_message(message.chat.id, 'Привет, ты написал мне /start\n' + str(message.chat.id))
 
 
-start_handler = CommandHandler('start', start)
-dispatcher.add_handler(start_handler)
+@bot.message_handler(commands=['stats'])
+def start_command(message):
+    bot.send_message(message.chat.id, 'Статистика скоро появится')
 
 
-def chat_id(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text=update.effective_chat.id)
+@bot.message_handler(commands=['stop'])
+def stop_command(message):
+    user_id = str(message.from_user.id)
+    game: Game = game_container.get_game_for_user(user_id)
+    if game.is_started:
+        game.stop()
+        bot.send_message(message.chat.id, 'Game has stopped. Secret was ' + game.secret)
+        logging.info('User ' + str(message.from_user.username) + ' has stopped game')
+        keyboard = get_start_game_keyboard()
+        bot.send_message(message.chat.id, text='Again?', reply_markup=keyboard)
+    else:
+        bot.send_message(message.chat.id, 'You have no active game')
+        game_command(message)
 
 
-chat_id_handler = CommandHandler('chat_id', chat_id)
-dispatcher.add_handler(chat_id_handler)
+@bot.message_handler(commands=['game'])
+def game_command(message):
+    keyboard = get_start_game_keyboard()
+    bot.send_message(message.chat.id, text='Should we begin?', reply_markup=keyboard)
+    # bot.reply_to(message, text='Should we begin?', reply_markup=keyboard)
 
 
-def echo(update, context):
-    logging.log(logging.INFO, context)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
+@bot.callback_query_handler(func=lambda call: call.data == 'start')
+def start_callback_handler(call):
+    user_id = str(call.from_user.id)
+    game: Game = game_container.get_game_for_user(user_id)
+    if game.is_started:
+        bot.send_message(call.message.chat.id, 'Game is started already')
+    else:
+        game.start()
+        logging.info(
+            "Game is started with user " + str(call.from_user.first_name) + " " + str(call.from_user.last_name)
+            + " (" + str(call.from_user.username) + "). Secret is " + game.secret)
+        bot.send_message(call.message.chat.id, 'Game has begun!')
 
 
-echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
-dispatcher.add_handler(echo_handler)
+@bot.callback_query_handler(func=lambda call: call.data == 'cancel')
+def cancel_handler(call):
+    bot.send_message(call.message.chat.id, "OK")
 
 
-# def caps(update, context):
-#     text_caps = ' '.join(context.args).upper()
-#     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
-#
-#
-# caps_handler = CommandHandler('caps', caps)
-# dispatcher.add_handler(caps_handler)
+@bot.message_handler(content_types=['text'])
+def handle_text_message(message):
+    user_id = str(message.from_user.id)
+    game: Game = game_container.get_game_for_user(user_id)
+    if game.is_started:
+        result = game.try_string(message.text)
+        bot.send_message(message.chat.id, str(result))
+        if not game.is_started:
+            keyboard = get_start_game_keyboard()
+            logging.info('User ' + str(message.from_user.username) + ' has finished game in '
+                         + str(game_container.get_game_for_user(user_id).try_count) + ' tries')
+            bot.send_message(message.chat.id, text='Again?', reply_markup=keyboard)
+    else:
+        logging.info('got message ' + str(message))
+        bot.send_message(message.chat.id, text='No game is active')
+        game_command(message)
 
 
-# def inline_caps(update, context):
-#     query = update.inline_query.query
-#     if not query:
-#         return
-#     results = list()
-#     results.append(
-#         InlineQueryResultArticle(
-#             id=query.upper(),
-#             title='Caps',
-#             input_message_content=InputTextMessageContent(query.upper())
-#         )
-#     )
-#     context.bot.answer_inline_query(update.inline_query.id, results)
-#
-#
-# inline_caps_handler = InlineQueryHandler(inline_caps)
-# dispatcher.add_handler(inline_caps_handler)
+def get_start_game_keyboard():
+    keyboard = types.InlineKeyboardMarkup()
+    key_start = types.InlineKeyboardButton(text="Start", callback_data="start")
+    keyboard.add(key_start)
+    key_start = types.InlineKeyboardButton(text="Cancel", callback_data="cancel")
+    keyboard.add(key_start)
+    return keyboard
 
 
-def inline_chat_id(update, context):
-    query = update.inline_query.query
-    if not query:
-        return
-    results = list()
-    results.append(
-        InlineQueryResultArticle(
-            id=query.upper(),
-            title='Chat ID',
-            input_message_content=InputTextMessageContent(query)
-        )
-    )
-    context.bot.answer_inline_query(update.inline_query.id, results)
+def polling():
+    try:
+        bot.polling()
+    except:
+        logging.exception("Error while polling:", sys.exc_info()[0])
+        polling()
 
 
-inline_chat_id_handler = InlineQueryHandler(inline_chat_id)
-dispatcher.add_handler(inline_chat_id_handler)
-
-
-def unknown(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id,
-                             text="Sorry, I didn't understand that command.\n" + str(context.args))
-
-
-unknown_handler = MessageHandler(Filters.command, unknown)
-dispatcher.add_handler(unknown_handler)
-
-updater.start_polling()
+polling()

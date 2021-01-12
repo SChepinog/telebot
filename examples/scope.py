@@ -1,8 +1,10 @@
-import mine_token
 # Подключаем модуль случайных чисел
 import random
+
 # Подключаем модуль для Телеграма
 import telebot
+
+import mine_token
 
 # Указываем токен
 bot = telebot.TeleBot(mine_token.get_token())
