@@ -8,13 +8,13 @@ class Game(Base):
     __tablename__ = 'games'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship("User", backref="games")
     game_secret = Column(String)
     try_count = Column(Integer)
     is_started = Column(Boolean)
 
-    def __init__(self, user, game_secret, try_count=0, is_started=False):
+    def __init__(self, user, game_secret, try_count=0, is_started=True):
         self.user = user
         self.game_secret = game_secret
         self.try_count = try_count
