@@ -6,7 +6,7 @@ from telebot import types
 
 import game_container
 import mine_token
-from game_container import Game
+from tg.game import TgGame
 
 bot = telebot.TeleBot(mine_token.get_token())
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -25,7 +25,7 @@ def start_command(message):
 @bot.message_handler(commands=['stop'])
 def stop_command(message):
     user_id = str(message.from_user.id)
-    game: Game = game_container.get_game_for_user(user_id)
+    game: TgGame = game_container.get_game_for_user(user_id)
     if game.is_started:
         game.stop()
         bot.send_message(message.chat.id, 'Game has stopped. Secret was ' + game.secret)
@@ -47,7 +47,7 @@ def game_command(message):
 @bot.callback_query_handler(func=lambda call: call.data == 'start')
 def start_callback_handler(call):
     user_id = str(call.from_user.id)
-    game: Game = game_container.get_game_for_user(user_id)
+    game: TgGame = game_container.get_game_for_user(user_id)
     if game.is_started:
         bot.send_message(call.message.chat.id, 'Game is started already')
     else:
@@ -66,7 +66,7 @@ def cancel_handler(call):
 @bot.message_handler(content_types=['text'])
 def handle_text_message(message):
     user_id = str(message.from_user.id)
-    game: Game = game_container.get_game_for_user(user_id)
+    game: TgGame = game_container.get_game_for_user(user_id)
     if game.is_started:
         result = game.try_string(message.text)
         bot.send_message(message.chat.id, str(result))
