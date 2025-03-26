@@ -1,0 +1,240 @@
+{
+	"info": {
+		"_postman_id": "409fa8d9-4883-4559-908f-1a7c74501f1a",
+		"name": "Button_B2C",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11339664"
+	},
+	"item": [
+		{
+			"name": "Create document",
+			"item": [
+				{
+					"name": "DOMESTIC_PAYMENT_FL",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dboId\": 1003938,\n  \"kind\": \"PRIVATE_PAYMENT\",\n  \"externalRef\": \"{{$guid}}\",\n  \"origin\": \"MS_ABS\",\n  \"callback\": \"/return/me/code200\",\n  \"payload\": {\n    \"fields\": [\n      {\n        \"value\": \"127.70\",\n        \"labelRu\": \"Сумма операции\",\n        \"labelEn\": \"Operation cost\",\n        \"name\": \"amount\",\n        \"order\": 8,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"Рамзан Ахматович К.\",\n        \"labelRu\": \"Получатель\",\n        \"labelEn\": \"Beneficiary\",\n        \"name\": \"beneficiaryName\",\n        \"order\": 1,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"Компенсация извинений\",\n        \"labelRu\": \"Назначение платежа\",\n        \"labelEn\": \"Purpose\",\n        \"name\": \"purpose\",\n        \"order\": 5,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"40817810490550388560\",\n        \"labelRu\": \"Счёт получателя\",\n        \"labelEn\": \"Beneficiary account\",\n        \"name\": \"beneficiaryAccount\",\n        \"order\": 2,\n        \"format\": \"##### ### # #### #######\"\n      },\n      {\n        \"value\": \"ПАО \\\"БАНК \\\"САНКТ-ПЕТЕРБУРГ\\\"\",\n        \"labelRu\": \"Банк получателя\",\n        \"labelEn\": \"Beneficiary bank name\",\n        \"name\": \"beneficiaryBank\",\n        \"order\": 3,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"044030790\",\n        \"labelRu\": \"БИК\",\n        \"labelEn\": \"BIC\",\n        \"name\": \"beneficiaryBIC\",\n        \"order\": 4,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"40817810700001009626\",\n        \"labelRu\": \"Счёт списания\",\n        \"labelEn\": \"Remitter account\",\n        \"name\": \"remitterAccount\",\n        \"order\": 6,\n        \"format\": \"##### ### # #### #######\"\n      },\n      {\n        \"value\": \"0\",\n        \"labelRu\": \"Комиссия\",\n        \"labelEn\": \"Fee\",\n        \"name\": \"fee\",\n        \"order\": 7,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"RUB\",\n        \"labelRu\": \"Валюта\",\n        \"labelEn\": \"Currency\",\n        \"name\": \"currency\",\n        \"order\": 9,\n        \"format\": \"\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://sandbox.dev.lipt-soft.ru:7122/documents",
+							"protocol": "http",
+							"host": [
+								"sandbox",
+								"dev",
+								"lipt-soft",
+								"ru"
+							],
+							"port": "7122",
+							"path": [
+								"documents"
+							]
+						},
+						"description": "Create document for sign"
+					},
+					"response": []
+				},
+				{
+					"name": "DOMESTIC_PAYMENT_UL",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dboId\": 1003938,\n  \"kind\": \"CORPORATE_PAYMENT\",\n  \"externalRef\": \"{{$guid}}\",\n  \"origin\": \"MS_ABS\",\n  \"callback\": \"/return/me/code200\",\n  \"payload\": {\n    \"fields\": [\n      {\n        \"value\": \"666.70\",\n        \"labelRu\": \"Сумма операции\",\n        \"labelEn\": \"Operation cost\",\n        \"name\": \"amount\",\n        \"order\": 8,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"Пельменная №300\",\n        \"labelRu\": \"Получатель\",\n        \"labelEn\": \"Beneficiary\",\n        \"name\": \"beneficiaryName\",\n        \"order\": 1,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"Оплата килечки и водочки для легкой походочки\",\n        \"labelRu\": \"Назначение платежа\",\n        \"labelEn\": \"Purpose\",\n        \"name\": \"purpose\",\n        \"order\": 5,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"40702810090250000569\",\n        \"labelRu\": \"Счёт получателя\",\n        \"labelEn\": \"Beneficiary account\",\n        \"name\": \"beneficiaryAccount\",\n        \"order\": 2,\n        \"format\": \"##### ### # #### #######\"\n      },\n      {\n        \"value\": \"ПАО \\\"БАНК \\\"САНКТ-ПЕТЕРБУРГ\\\"\",\n        \"labelRu\": \"Банк получателя\",\n        \"labelEn\": \"Beneficiary bank name\",\n        \"name\": \"beneficiaryBank\",\n        \"order\": 3,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"044030790\",\n        \"labelRu\": \"БИК\",\n        \"labelEn\": \"BIC\",\n        \"name\": \"beneficiaryBIC\",\n        \"order\": 4,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"40817810700001009626\",\n        \"labelRu\": \"Счёт списания\",\n        \"labelEn\": \"Remitter account\",\n        \"name\": \"remitterAccount\",\n        \"order\": 6,\n        \"format\": \"##### ### # #### #######\"\n      },\n      {\n        \"value\": \"0\",\n        \"labelRu\": \"Комиссия\",\n        \"labelEn\": \"Fee\",\n        \"name\": \"fee\",\n        \"order\": 7,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"RUB\",\n        \"labelRu\": \"Валюта\",\n        \"labelEn\": \"Currency\",\n        \"name\": \"currency\",\n        \"order\": 9,\n        \"format\": \"\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://sandbox.dev.lipt-soft.ru:7122/documents",
+							"protocol": "http",
+							"host": [
+								"sandbox",
+								"dev",
+								"lipt-soft",
+								"ru"
+							],
+							"port": "7122",
+							"path": [
+								"documents"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://sandbox.dev.lipt-soft.ru:7122/documents' \\\n--header 'Content-Type: application/json' \\\n--data '{\n  \"dboId\": 1003938,\n  \"kind\": \"CORPORATE_PAYMENT\",\n  \"externalRef\": \"5270ad55-3e80-63cd-1ad0-32a7eb9f0300\",\n  \"origin\": \"MS_ABS\",\n  \"callback\": \"/return/me/code200\",\n  \"payload\": {\n    \"fields\": [\n      {\n        \"value\": \"666.70\",\n        \"labelRu\": \"Сумма операции\",\n        \"labelEn\": \"Operation cost\",\n        \"name\": \"amount\",\n        \"order\": 8,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"Пельменная №300\",\n        \"labelRu\": \"Получатель\",\n        \"labelEn\": \"Beneficiary\",\n        \"name\": \"beneficiaryName\",\n        \"order\": 1,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"Оплата килечки и водочки для легкой походочки\",\n        \"labelRu\": \"Назначение платежа\",\n        \"labelEn\": \"Purpose\",\n        \"name\": \"purpose\",\n        \"order\": 5,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"40702810090250000569\",\n        \"labelRu\": \"Счёт получателя\",\n        \"labelEn\": \"Beneficiary account\",\n        \"name\": \"beneficiaryAccount\",\n        \"order\": 2,\n        \"format\": \"##### ### # #### #######\"\n      },\n      {\n        \"value\": \"ПАО \\\"БАНК \\\"САНКТ-ПЕТЕРБУРГ\\\"\",\n        \"labelRu\": \"Банк получателя\",\n        \"labelEn\": \"Beneficiary bank name\",\n        \"name\": \"beneficiaryBank\",\n        \"order\": 3,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"044030790\",\n        \"labelRu\": \"БИК\",\n        \"labelEn\": \"BIC\",\n        \"name\": \"beneficiaryBIC\",\n        \"order\": 4,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"40817810700001009626\",\n        \"labelRu\": \"Счёт списания\",\n        \"labelEn\": \"Remitter account\",\n        \"name\": \"remitterAccount\",\n        \"order\": 6,\n        \"format\": \"##### ### # #### #######\"\n      },\n      {\n        \"value\": \"0\",\n        \"labelRu\": \"Комиссия\",\n        \"labelEn\": \"Fee\",\n        \"name\": \"fee\",\n        \"order\": 7,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"RUB\",\n        \"labelRu\": \"Валюта\",\n        \"labelEn\": \"Currency\",\n        \"name\": \"currency\",\n        \"order\": 9,\n        \"format\": \"\"\n      }\n    ]\n  }\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "PERSONAL_PAYMENT",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dboId\": 1003938,\n  \"kind\": \"PERSONAL_PAYMENT\",\n  \"externalRef\": \"{{$guid}}\",\n  \"origin\": \"MS_ABS\",\n  \"callback\": \"/return/me/code200\",\n  \"payload\": {\n    \"fields\": [\n      {\n        \"value\": \"112.33\",\n        \"labelRu\": \"Сумма операции\",\n        \"labelEn\": \"Operation cost\",\n        \"name\": \"amount\",\n        \"order\": 8,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"Между своими счетами\",\n        \"labelRu\": \"Назначение платежа\",\n        \"labelEn\": \"Purpose\",\n        \"name\": \"purpose\",\n        \"order\": 5,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"40817810700001009626\",\n        \"labelRu\": \"Счёт получателя\",\n        \"labelEn\": \"Beneficiary account\",\n        \"name\": \"beneficiaryAccount\",\n        \"order\": 2,\n        \"format\": \"##### ### # #### #######\"\n      },\n      {\n        \"value\": \"ПАО \\\"БАНК \\\"САНКТ-ПЕТЕРБУРГ\\\"\",\n        \"labelRu\": \"Банк получателя\",\n        \"labelEn\": \"Beneficiary bank name\",\n        \"name\": \"beneficiaryBank\",\n        \"order\": 3,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"044030790\",\n        \"labelRu\": \"БИК\",\n        \"labelEn\": \"BIC\",\n        \"name\": \"beneficiaryBIC\",\n        \"order\": 4,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"40817810100001009624\",\n        \"labelRu\": \"Счёт списания\",\n        \"labelEn\": \"Remitter account\",\n        \"name\": \"remitterAccount\",\n        \"order\": 6,\n        \"format\": \"##### ### # #### #######\"\n      },\n      {\n        \"value\": \"0\",\n        \"labelRu\": \"Комиссия\",\n        \"labelEn\": \"Fee\",\n        \"name\": \"fee\",\n        \"order\": 7,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"RUB\",\n        \"labelRu\": \"Валюта\",\n        \"labelEn\": \"Currency\",\n        \"name\": \"currency\",\n        \"order\": 9,\n        \"format\": \"\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://sandbox.dev.lipt-soft.ru:7122/documents",
+							"protocol": "http",
+							"host": [
+								"sandbox",
+								"dev",
+								"lipt-soft",
+								"ru"
+							],
+							"port": "7122",
+							"path": [
+								"documents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TAX_PAYMENT",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dboId\": 1003938,\n  \"kind\": \"CORPORATE_PAYMENT\",\n  \"externalRef\": \"{{$guid}}\",\n  \"origin\": \"MS_ABS\",\n  \"callback\": \"/return/me/code200\",\n  \"payload\": {\n    \"fields\": [\n      {\n        \"value\": \"303.00\",\n        \"labelRu\": \"Сумма операции\",\n        \"labelEn\": \"Operation cost\",\n        \"name\": \"amount\",\n        \"order\": 8,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"СЕВЕРО-ЗАПАДНОЕ ГУ БАНКА РОССИИ УФК по г. Санкт-Петербургу г. Санкт-Петербург\",\n        \"labelRu\": \"Получатель\",\n        \"labelEn\": \"Beneficiary\",\n        \"name\": \"beneficiaryName\",\n        \"order\": 1,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"Оплата налогов на имущество кота\",\n        \"labelRu\": \"Назначение платежа\",\n        \"labelEn\": \"Purpose\",\n        \"name\": \"purpose\",\n        \"order\": 5,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"03100643000000017200\",\n        \"labelRu\": \"Счёт получателя\",\n        \"labelEn\": \"Beneficiary account\",\n        \"name\": \"beneficiaryAccount\",\n        \"order\": 2,\n        \"format\": \"##### ### # #### #######\"\n      },\n      {\n        \"value\": \"СЕВЕРО-ЗАПАДНОЕ ГУ БАНКА РОССИИ//УФК по г.Санкт-Петербургу\",\n        \"labelRu\": \"Банк получателя\",\n        \"labelEn\": \"Beneficiary bank name\",\n        \"name\": \"beneficiaryBank\",\n        \"order\": 3,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"7806043316\",\n        \"labelRu\": \"ИНН Получателя\",\n        \"labelEn\": \"Beneficiary Vatin\",\n        \"name\": \"beneficiaryVatin\",\n        \"order\": 10,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"014030106\",\n        \"labelRu\": \"БИК\",\n        \"labelEn\": \"BIC\",\n        \"name\": \"beneficiaryBIC\",\n        \"order\": 4,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"40817810700001009626\",\n        \"labelRu\": \"Счёт списания\",\n        \"labelEn\": \"Remitter account\",\n        \"name\": \"remitterAccount\",\n        \"order\": 6,\n        \"format\": \"##### ### # #### #######\"\n      },\n      {\n        \"value\": \"0\",\n        \"labelRu\": \"Комиссия\",\n        \"labelEn\": \"Fee\",\n        \"name\": \"fee\",\n        \"order\": 7,\n        \"format\": \"\"\n      },\n      {\n        \"value\": \"RUB\",\n        \"labelRu\": \"Валюта\",\n        \"labelEn\": \"Currency\",\n        \"name\": \"currency\",\n        \"order\": 9,\n        \"format\": \"\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://sandbox.dev.lipt-soft.ru:7122/documents",
+							"protocol": "http",
+							"host": [
+								"sandbox",
+								"dev",
+								"lipt-soft",
+								"ru"
+							],
+							"port": "7122",
+							"path": [
+								"documents"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
